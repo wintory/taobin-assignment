@@ -1,11 +1,10 @@
-import { FavoriteRepo, Repository } from './../types/repository';
-import { useMemo, useState } from 'react';
+import { FavoriteRepo } from './../types/repository';
+import { useState } from 'react';
 import { getRepositories } from '../services/repository';
 import { PAGE_LIMIT } from '../constants';
 import { useQuery } from '@tanstack/react-query';
 
 const useRepository = () => {
-  const [repositories, setRepositories] = useState<Repository[]>([]);
   const [favoriteRepo, setFavoriteRepo] = useState<FavoriteRepo[]>([]);
   const [isOpenAddRepo, setIsOpenAddRepo] = useState<boolean>(false);
   const [page, setPage] = useState<number>(1);
