@@ -1,37 +1,47 @@
-import { FavoriteRepo, Repository } from './../types/repository';
-import { useState } from 'react';
+import { Repository } from './../types/repository';
+import { useState, useEffect, useCallback } from 'react';
 import { getRepositories } from '../services/repository';
 import { PAGE_LIMIT } from '../constants';
-import { useQuery } from '@tanstack/react-query';
-import uniq from 'lodash/uniq';
 import { uniqBy } from 'lodash';
 
 const useRepository = () => {
   const [repositories, setRepositories] = useState<Repository[]>([]);
+  const [isLoading, setIsLoading] = useState(false);
   const [page, setPage] = useState<number>(1);
-  const { isLoading, refetch } = useQuery(['repositories'], async () => {
-    const { items = [] }: { items: Repository[] } = await getRepositories(
+  const [hasNextPage, setHasNextPage] = useState(false);
+
+  const getRepositoryData = useCallback(async (currentPage?: number) => {
+    setIsLoading(true);
+
+    if (currentPage) {
+      setPage(currentPage);
+    }
+
+    const {
+      items = [],
+      total_count,
+    }: { items: Repository[]; total_count: number } = await getRepositories(
       page,
       PAGE_LIMIT
     );
-    const result = uniqBy(items, data => data.id);
+    const result = uniqBy([...repositories, ...items], data => data.id);
 
     setRepositories(result);
-  });
+    setIsLoading(false);
+  }, []);
 
-  const getMoreRepositoryData = (page: number) => {
-    setPage(page);
-    refetch();
-  };
+  useEffect(() => {
+    getRepositoryData();
+  }, []);
 
   return {
     repositories,
     setRepositories,
     page,
-    getRepositories: refetch,
-    getMoreRepositoryData,
+    getRepositoryData,
     setPage,
     isLoading,
+    hasNextPage,
   };
 };
 

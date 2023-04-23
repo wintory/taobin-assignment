@@ -1,6 +1,7 @@
 import {
   Box,
   Button,
+  CircularProgress,
   Modal,
   Step,
   StepLabel,
@@ -8,13 +9,14 @@ import {
   styled,
   Typography,
 } from '@mui/material';
-import { FC, Fragment, useEffect, useMemo, useState } from 'react';
+import { FC, Fragment, useMemo, useState } from 'react';
 import CloseIcon from '@mui/icons-material/Close';
 import Card from '../../components/Card';
 import isNil from 'lodash/isNil';
 import useOrientation from '../../hooks/useOrientation';
 import useRepository from '../../hooks/useRepository';
 import { FavoriteRepo } from '../../types/repository';
+import useInfiniteScroll from 'react-infinite-scroll-hook';
 
 interface RepositoryModalProps {
   isOpen: boolean;
@@ -42,15 +44,24 @@ export const ModalWrapper = styled(Box)(({ theme }) => ({
 const RepositoryModal: FC<RepositoryModalProps> = ({
   isOpen,
   onClose,
-  favoriteRepo,
+  favoriteRepo = [],
   setFavoriteRepo,
 }) => {
   const [favorite, setFavorite] = useState<FavoriteRepo[]>([]);
   const { isMobile } = useOrientation();
-  const { repositories } = useRepository();
+  const { repositories, isLoading, getRepositoryData, page, hasNextPage } =
+    useRepository();
   const [activeStep, setActiveStep] = useState(0);
-  const steps = ['Choose Favorite Repositories', 'Confirmation'];
   const isFirstStep = activeStep === 0;
+  const [loadingRef] = useInfiniteScroll({
+    loading: isLoading,
+    hasNextPage,
+    onLoadMore: () => getRepositoryData(page + 1),
+    disabled: !hasNextPage || !isFirstStep,
+    rootMargin: '0px 0px 400px 0px',
+  });
+
+  const steps = ['Repositories', 'Confirmation'];
   const showData = useMemo(
     () => (isFirstStep ? repositories : favorite),
     [activeStep, repositories]
@@ -64,13 +75,11 @@ const RepositoryModal: FC<RepositoryModalProps> = ({
 
   const handleSelectedRepo = (id: number) => {
     const hasData = favorite.find(v => v.id === id);
+    const result = repositories.find(v => v.id === id);
 
-    if (hasData) {
-      const result = favorite.filter(v => v.id !== id);
-      setFavorite(result);
-    } else {
-      const result = repositories.find(v => v.id === id);
-      if (result) setFavorite([...favorite, result]);
+    if (!hasData && result) {
+      const { id, full_name, description } = result;
+      setFavorite([...favorite, { id, full_name, description }]);
     }
   };
 
@@ -151,20 +160,37 @@ const RepositoryModal: FC<RepositoryModalProps> = ({
             gap={2}
           >
             {showData ? (
-              showData.map(data => (
-                <Fragment key={data.id}>
-                  <Card
-                    handleSelected={() => handleSelectedRepo(data.id)}
-                    title={data.full_name}
-                    description={data.description}
-                    selected={!isNil(favorite.find(v => v.id === data.id))}
-                  />
-                </Fragment>
-              ))
+              showData.map(data => {
+                const hasFavorited = !isNil(
+                  favoriteRepo.find(v => v.id === data.id)
+                );
+                return (
+                  <Fragment key={data.id}>
+                    <Card
+                      handleSelected={() => handleSelectedRepo(data.id)}
+                      title={data.full_name}
+                      description={data.description}
+                      selected={!isNil(favorite.find(v => v.id === data.id))}
+                      disabled={hasFavorited}
+                    />
+                  </Fragment>
+                );
+              })
             ) : (
               <Typography variant="h5">No data</Typography>
             )}
           </Box>
+          {(isLoading || hasNextPage) && (
+            <Box
+              ref={loadingRef}
+              display="flex"
+              justifyContent="center"
+              width="100%"
+              py={6}
+            >
+              <CircularProgress color="primary" />
+            </Box>
+          )}
         </Box>
         <Box
           position="relative"

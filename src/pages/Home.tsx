@@ -37,7 +37,7 @@ const Home: FC = () => {
             variant="outlined"
             color="primary"
           >
-            <Typography variant="subtitle1">Add repo</Typography>
+            <Typography variant="subtitle1">Edit Favorite Repo</Typography>
           </AddButton>
         </Box>
         <Box
@@ -49,11 +49,18 @@ const Home: FC = () => {
           mt={2}
         >
           {hasFavoriteRepo ? (
-            favoriteRepo.map(({ id, full_name, description }) => {
-              <Fragment key={`favorite-${id}`}>
-                <Card title={full_name} description={description} />;
-              </Fragment>;
-            })
+            <Box>
+              {favoriteRepo.map(({ id, full_name, description }) => {
+                <Fragment key={`favorite-${id}`}>
+                  <Card
+                    disabled={false}
+                    title={full_name}
+                    description={description}
+                  />
+                  ;
+                </Fragment>;
+              })}
+            </Box>
           ) : (
             <div>
               <Typography variant="subtitle1">
