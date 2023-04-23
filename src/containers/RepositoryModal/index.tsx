@@ -15,10 +15,11 @@ import Card from '../../components/Card';
 import isNil from 'lodash/isNil';
 import useOrientation from '../../hooks/useOrientation';
 import useRepository from '../../hooks/useRepository';
-import { FavoriteRepo } from '../../types/repository';
+import { FavoriteRepo, Repository } from '../../types/repository';
 import useInfiniteScroll from 'react-infinite-scroll-hook';
 import StarIcon from '@mui/icons-material/Star';
 import StarOutlineIcon from '@mui/icons-material/StarOutline';
+import dayjs from 'dayjs';
 
 interface RepositoryModalProps {
   isOpen: boolean;
@@ -90,7 +91,16 @@ const RepositoryModal: FC<RepositoryModalProps> = ({
       setFavorite(result);
     } else {
       const result = repositories.find(v => v.id === id);
-      if (result) setFavorite([...favorite, result]);
+
+      if (result) {
+        const { html_url, id, full_name, description } = result;
+        const starredDate = dayjs().format('YYYY-MM-DD HH:mm');
+
+        setFavorite([
+          ...favorite,
+          { html_url, id, full_name, description, starredDate },
+        ]);
+      }
     }
   };
 

@@ -6,7 +6,8 @@ import RepositoryModal from '../containers/RepositoryModal';
 import useFavoriteRepo from '../hooks/useFavoriteRepo';
 import DeleteIcon from '@mui/icons-material/Delete';
 import SearchIcon from '@mui/icons-material/Search';
-import SearchOffIcon from '@mui/icons-material/SearchOff';
+import GithubHeader from 'assets/images/github-header-image.png';
+import AddIcon from '@mui/icons-material/Add';
 
 const Wrapper = styled(Box)(() => ({
   display: 'block',
@@ -39,14 +40,17 @@ const Home: FC = () => {
   return (
     <PageWrapper>
       <Wrapper>
-        <Typography variant="h3">My repos</Typography>
-        <Box width="100%" height="100%" mt={5} textAlign="left">
+        <img alt="header" src={GithubHeader} width="100%" />
+        <Box width="100%" height="100%" mt={5} textAlign="right">
           <AddButton
             onClick={() => setIsOpenAddRepo(!isOpenAddRepo)}
             variant="outlined"
             color="primary"
           >
-            <Typography variant="h5">Edit Favorite Repo</Typography>
+            <AddIcon fontSize="large" />
+            <Typography ml={1} p={1} variant="h5">
+              Add more repos
+            </Typography>
           </AddButton>
           {hasFavoriteRepo && (
             <Box width="100%" pt={2}>
@@ -87,6 +91,8 @@ const Home: FC = () => {
                   return (
                     <Fragment key={data.id}>
                       <Card
+                        link={data.html_url}
+                        date={data.starredDate}
                         disabled={false}
                         title={data.full_name}
                         description={data.description}

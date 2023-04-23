@@ -70,4 +70,7 @@ export type Repository = {
   readonly deployments_url: string;
 };
 
-export type FavoriteRepo = Pick<Repository, 'id' | 'full_name' | 'description'>;
+export type FavoriteRepo = Pick<
+  Repository,
+  'id' | 'full_name' | 'description' | 'html_url'
+> & { starredDate: string };

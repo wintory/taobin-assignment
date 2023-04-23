@@ -14,6 +14,8 @@ interface CardProps {
   handleSelected?: () => void;
   disabled: boolean;
   icon?: ReactNode;
+  link?: string;
+  date?: string;
 }
 
 const Card: FC<CardProps> = ({
@@ -23,6 +25,8 @@ const Card: FC<CardProps> = ({
   handleSelected,
   disabled,
   icon,
+  link,
+  date,
 }) => {
   const theme = useTheme();
   const isSelected = selected && !disabled;
@@ -61,7 +65,13 @@ const Card: FC<CardProps> = ({
           whiteSpace="nowrap"
           gutterBottom
         >
-          <b>{title}</b>
+          {link ? (
+            <a href={link} target="_blank">
+              {title}
+            </a>
+          ) : (
+            <b>{title}</b>
+          )}
         </Typography>
         <Typography
           variant="h6"
@@ -70,8 +80,19 @@ const Card: FC<CardProps> = ({
           overflow="hidden"
           whiteSpace="nowrap"
         >
-          <b>description:</b> {description || '-'}
+          <b>Description:</b> {description || '-'}
         </Typography>
+        {date && (
+          <Typography
+            variant="h6"
+            color="text.secondary"
+            textOverflow="ellipsis"
+            overflow="hidden"
+            whiteSpace="nowrap"
+          >
+            <b>Starred Date:</b> {date}
+          </Typography>
+        )}
       </CardContent>
       {icon && (
         <Box position="absolute" top="1.6rem" right="1.6rem">
