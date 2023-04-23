@@ -8,8 +8,6 @@ import { uniqBy } from 'lodash';
 
 const useRepository = () => {
   const [repositories, setRepositories] = useState<Repository[]>([]);
-  const [favoriteRepo, setFavoriteRepo] = useState<FavoriteRepo[]>([]);
-  const [isOpenAddRepo, setIsOpenAddRepo] = useState<boolean>(false);
   const [page, setPage] = useState<number>(1);
   const { isLoading, refetch } = useQuery(['repositories'], async () => {
     const { items = [] }: { items: Repository[] } = await getRepositories(
@@ -21,20 +19,6 @@ const useRepository = () => {
     setRepositories(result);
   });
 
-  const handleAddFavoriteRepo = (repoData: FavoriteRepo[]) => {
-    setFavoriteRepo([...favoriteRepo, ...repoData]);
-  };
-
-  const handleRemoveFavoriteRepo = (repoIds: number[]) => {
-    const result = favoriteRepo.filter(val => !repoIds.includes(val.id));
-    setFavoriteRepo(result);
-  };
-
-  const handleCloseAddRepo = () => {
-    setIsOpenAddRepo(false);
-    setRepositories([]);
-  };
-
   const getMoreRepositoryData = (page: number) => {
     setPage(page);
     refetch();
@@ -42,17 +26,12 @@ const useRepository = () => {
 
   return {
     repositories,
-    favoriteRepo,
+    setRepositories,
     page,
     getRepositories: refetch,
     getMoreRepositoryData,
     setPage,
     isLoading,
-    handleAddFavoriteRepo,
-    handleRemoveFavoriteRepo,
-    handleCloseAddRepo,
-    isOpenAddRepo,
-    setIsOpenAddRepo,
   };
 };
 

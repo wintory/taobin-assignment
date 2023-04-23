@@ -1,9 +1,9 @@
 import { createTheme } from '@mui/material/styles';
 
-let theme = createTheme();
-
-theme = createTheme(theme, {
+const theme = createTheme({
   palette: {
+    primary: { main: '#23748B' },
+    error: { main: '#A40004' },
     common: {
       white: '#FFFFFF',
       black: '#000000',
@@ -27,36 +27,36 @@ theme = createTheme(theme, {
       fontStyle: 'normal',
       fontWeight: 400,
 
-      [theme.breakpoints.up('md')]: {
-        fontSize: '4.8rem',
-      },
+      // [MUITheme.breakpoints.up('md')]: {
+      //   fontSize: '4.8rem',
+      // },
     },
     h3: {
       fontSize: '2.4rem',
       fontStyle: 'normal',
       fontWeight: 400,
 
-      [theme.breakpoints.up('md')]: {
-        fontSize: '4rem',
-      },
+      // [MUITheme.breakpoints.up('md')]: {
+      //   fontSize: '4rem',
+      // },
     },
     subtitle1: {
       fontSize: '1.8rem',
       fontStyle: 'normal',
       fontWeight: 400,
 
-      [theme.breakpoints.up('md')]: {
-        fontSize: '2.4rem',
-      },
+      // [MUITheme.breakpoints.up('md')]: {
+      //   fontSize: '2.4rem',
+      // },
     },
     body1: {
       fontSize: '1.4rem',
       fontStyle: 'normal',
       fontWeight: 400,
 
-      [theme.breakpoints.up('md')]: {
-        fontSize: '1.8rem',
-      },
+      // [MUITheme.breakpoints.up('md')]: {
+      //   fontSize: '1.8rem',
+      // },
     },
   },
 });

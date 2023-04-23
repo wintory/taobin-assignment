@@ -1,8 +1,9 @@
 import { Box, Button, styled, Typography } from '@mui/material';
-import { FC, useMemo } from 'react';
+import { FC, Fragment, useState } from 'react';
+import Card from '../components/Card';
 import PageWrapper from '../components/PageWrapper';
 import RepositoryModal from '../containers/RepositoryModal';
-import useRepository from '../hooks/useRepository';
+import useFavoriteRepo from '../hooks/useFavoriteRepo';
 
 const Wrapper = styled(Box)(() => ({
   display: 'block',
@@ -18,28 +19,25 @@ const AddButton = styled(Button)(({ theme }) => ({
 }));
 
 const Home: FC = () => {
-  const { repositories, isOpenAddRepo, favoriteRepo, setIsOpenAddRepo } =
-    useRepository();
-  const hasFavoriteRepo = useMemo(
-    () => favoriteRepo.length > 0,
-    [favoriteRepo.length]
-  );
+  const [isOpenAddRepo, setIsOpenAddRepo] = useState<boolean>(false);
+  const { favoriteRepo, setFavoriteRepo } = useFavoriteRepo();
+  const hasFavoriteRepo = favoriteRepo.length > 0;
 
-  const repo = useMemo(() => {
-    return repositories;
-  }, [repositories]);
+  const handleCloseAddRepo = () => {
+    setIsOpenAddRepo(false);
+  };
 
   return (
     <PageWrapper>
       <Wrapper>
-        <Typography variant="h1">My repos</Typography>
+        <Typography variant="h3">My repos</Typography>
         <Box width="100%" height="100%" mt={5} textAlign="left">
           <AddButton
             onClick={() => setIsOpenAddRepo(!isOpenAddRepo)}
             variant="outlined"
             color="primary"
           >
-            Add Repo
+            <Typography variant="subtitle1">Add repo</Typography>
           </AddButton>
         </Box>
         <Box
@@ -51,18 +49,25 @@ const Home: FC = () => {
           mt={2}
         >
           {hasFavoriteRepo ? (
-            <div />
+            favoriteRepo.map(({ id, full_name, description }) => {
+              <Fragment key={`favorite-${id}`}>
+                <Card title={full_name} description={description} />;
+              </Fragment>;
+            })
           ) : (
             <div>
-              <Typography variant="h3">No Favorite Repository.</Typography>
+              <Typography variant="subtitle1">
+                No Favorite Repository.
+              </Typography>
             </div>
           )}
         </Box>
       </Wrapper>
       <RepositoryModal
-        data={repo}
+        favoriteRepo={favoriteRepo}
+        setFavoriteRepo={setFavoriteRepo}
         isOpen={isOpenAddRepo}
-        onClose={() => setIsOpenAddRepo(false)}
+        onClose={handleCloseAddRepo}
       />
     </PageWrapper>
   );
