@@ -10,7 +10,7 @@ import {
   styled,
   Typography,
 } from '@mui/material';
-import { FC, Fragment } from 'react';
+import { FC, Fragment, useEffect } from 'react';
 import CloseIcon from '@mui/icons-material/Close';
 import Card from '../../components/Card';
 import isNil from 'lodash/isNil';

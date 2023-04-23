@@ -1,5 +1,5 @@
 import { Box, Button, Input, styled, Typography } from '@mui/material';
-import { FC, Fragment, useState } from 'react';
+import { FC, useState } from 'react';
 import Card from '../components/Card';
 import PageWrapper from '../components/PageWrapper';
 import RepositoryModal from '../containers/RepositoryModal';
@@ -90,7 +90,10 @@ const Home: FC = () => {
               {resultSearchRepo.length > 0 ? (
                 resultSearchRepo.map(data => {
                   return (
-                    <Fragment key={data.id}>
+                    <Box
+                      key={data.id}
+                      sx={{ '.MuiCardContent-root': { cursor: 'initial' } }}
+                    >
                       <Card
                         link={data.html_url}
                         date={data.starredDate}
@@ -106,7 +109,7 @@ const Home: FC = () => {
                           />
                         }
                       />
-                    </Fragment>
+                    </Box>
                   );
                 })
               ) : (

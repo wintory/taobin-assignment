@@ -27,8 +27,8 @@ const useRepoModal = ({ setFavoriteRepo, onClose }: UseRepoModalProps) => {
   const [loadingRef] = useInfiniteScroll({
     loading: isLoading,
     hasNextPage: isFirstStep && hasNextPage,
-    onLoadMore: () => getRepositoryData(page + 1),
-    disabled: !hasNextPage || !isFirstStep,
+    onLoadMore: () => getRepositoryData(page + 1, 10),
+    disabled: isLoading || !hasNextPage || !isFirstStep,
     rootMargin: '0px 0px 400px 0px',
   });
   const steps = ['Repositories', 'Confirmation'];
