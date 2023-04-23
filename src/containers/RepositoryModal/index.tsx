@@ -17,6 +17,8 @@ import useOrientation from '../../hooks/useOrientation';
 import useRepository from '../../hooks/useRepository';
 import { FavoriteRepo } from '../../types/repository';
 import useInfiniteScroll from 'react-infinite-scroll-hook';
+import StarIcon from '@mui/icons-material/Star';
+import StarOutlineIcon from '@mui/icons-material/StarOutline';
 
 interface RepositoryModalProps {
   isOpen: boolean;
@@ -49,10 +51,17 @@ const RepositoryModal: FC<RepositoryModalProps> = ({
 }) => {
   const [favorite, setFavorite] = useState<FavoriteRepo[]>([]);
   const { isMobile } = useOrientation();
-  const { repositories, isLoading, getRepositoryData, page, hasNextPage } =
-    useRepository();
+  const {
+    repositories,
+    isLoading,
+    getRepositoryData,
+    page,
+    setPage,
+    hasNextPage,
+  } = useRepository();
   const [activeStep, setActiveStep] = useState(0);
   const isFirstStep = activeStep === 0;
+
   const [loadingRef] = useInfiniteScroll({
     loading: isLoading,
     hasNextPage,
@@ -60,7 +69,6 @@ const RepositoryModal: FC<RepositoryModalProps> = ({
     disabled: !hasNextPage || !isFirstStep,
     rootMargin: '0px 0px 400px 0px',
   });
-
   const steps = ['Repositories', 'Confirmation'];
   const showData = useMemo(
     () => (isFirstStep ? repositories : favorite),
@@ -69,17 +77,20 @@ const RepositoryModal: FC<RepositoryModalProps> = ({
 
   const handleClose = () => {
     setFavorite([]);
+    setPage(0);
     setActiveStep(0);
     onClose();
   };
 
   const handleSelectedRepo = (id: number) => {
     const hasData = favorite.find(v => v.id === id);
-    const result = repositories.find(v => v.id === id);
 
-    if (!hasData && result) {
-      const { id, full_name, description } = result;
-      setFavorite([...favorite, { id, full_name, description }]);
+    if (hasData) {
+      const result = favorite.filter(v => v.id !== id);
+      setFavorite(result);
+    } else {
+      const result = repositories.find(v => v.id === id);
+      if (result) setFavorite([...favorite, result]);
     }
   };
 
@@ -157,21 +168,29 @@ const RepositoryModal: FC<RepositoryModalProps> = ({
             width="100%"
             display="grid"
             gridTemplateColumns={isMobile ? '1fr' : '1fr 1fr'}
-            gap={2}
+            gap={isMobile ? 0 : 2}
           >
             {showData ? (
               showData.map(data => {
                 const hasFavorited = !isNil(
                   favoriteRepo.find(v => v.id === data.id)
                 );
+                const isSelected = !isNil(favorite.find(v => v.id === data.id));
                 return (
                   <Fragment key={data.id}>
                     <Card
                       handleSelected={() => handleSelectedRepo(data.id)}
                       title={data.full_name}
                       description={data.description}
-                      selected={!isNil(favorite.find(v => v.id === data.id))}
+                      selected={isSelected}
                       disabled={hasFavorited}
+                      icon={
+                        isSelected ? (
+                          <StarIcon fontSize="medium" color="warning" />
+                        ) : (
+                          <StarOutlineIcon fontSize="medium" />
+                        )
+                      }
                     />
                   </Fragment>
                 );

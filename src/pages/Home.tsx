@@ -1,9 +1,10 @@
-import { Box, Button, styled, Typography } from '@mui/material';
+import { Box, Button, Icon, styled, Typography } from '@mui/material';
 import { FC, Fragment, useState } from 'react';
 import Card from '../components/Card';
 import PageWrapper from '../components/PageWrapper';
 import RepositoryModal from '../containers/RepositoryModal';
 import useFavoriteRepo from '../hooks/useFavoriteRepo';
+import DeleteIcon from '@mui/icons-material/Delete';
 
 const Wrapper = styled(Box)(() => ({
   display: 'block',
@@ -20,7 +21,8 @@ const AddButton = styled(Button)(({ theme }) => ({
 
 const Home: FC = () => {
   const [isOpenAddRepo, setIsOpenAddRepo] = useState<boolean>(false);
-  const { favoriteRepo, setFavoriteRepo } = useFavoriteRepo();
+  const { favoriteRepo, handleAddFavoriteRepo, handleRemoveFavoriteRepo } =
+    useFavoriteRepo();
   const hasFavoriteRepo = favoriteRepo.length > 0;
 
   const handleCloseAddRepo = () => {
@@ -43,24 +45,31 @@ const Home: FC = () => {
         <Box
           width="100%"
           height="100%"
-          display="flex"
+          display="block"
           alignItems="center"
           justifyContent="center"
+          textAlign="left"
           mt={2}
         >
           {hasFavoriteRepo ? (
-            <Box>
-              {favoriteRepo.map(({ id, full_name, description }) => {
-                <Fragment key={`favorite-${id}`}>
+            favoriteRepo.map(data => {
+              return (
+                <Fragment key={data.id}>
                   <Card
                     disabled={false}
-                    title={full_name}
-                    description={description}
+                    title={data.full_name}
+                    description={data.description}
+                    icon={
+                      <DeleteIcon
+                        color="error"
+                        fontSize="large"
+                        onClick={() => handleRemoveFavoriteRepo(data.id)}
+                      />
+                    }
                   />
-                  ;
-                </Fragment>;
-              })}
-            </Box>
+                </Fragment>
+              );
+            })
           ) : (
             <div>
               <Typography variant="subtitle1">
@@ -72,7 +81,7 @@ const Home: FC = () => {
       </Wrapper>
       <RepositoryModal
         favoriteRepo={favoriteRepo}
-        setFavoriteRepo={setFavoriteRepo}
+        setFavoriteRepo={handleAddFavoriteRepo}
         isOpen={isOpenAddRepo}
         onClose={handleCloseAddRepo}
       />

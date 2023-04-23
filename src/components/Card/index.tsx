@@ -5,9 +5,7 @@ import {
   useTheme,
   Box,
 } from '@mui/material';
-import StarIcon from '@mui/icons-material/Star';
-import StarOutlineIcon from '@mui/icons-material/StarOutline';
-import { FC } from 'react';
+import { FC, ReactNode } from 'react';
 
 interface CardProps {
   title: string;
@@ -15,6 +13,7 @@ interface CardProps {
   selected?: boolean;
   handleSelected?: () => void;
   disabled: boolean;
+  icon?: ReactNode;
 }
 
 const Card: FC<CardProps> = ({
@@ -23,6 +22,7 @@ const Card: FC<CardProps> = ({
   selected = false,
   handleSelected,
   disabled,
+  icon,
 }) => {
   const theme = useTheme();
   const isSelected = selected && !disabled;
@@ -53,7 +53,14 @@ const Card: FC<CardProps> = ({
       onClick={handleClick}
     >
       <CardContent>
-        <Typography variant="h5" color="text.secondary" gutterBottom>
+        <Typography
+          variant="h5"
+          color="text.secondary"
+          textOverflow="ellipsis"
+          overflow="hidden"
+          whiteSpace="nowrap"
+          gutterBottom
+        >
           <b>{title}</b>
         </Typography>
         <Typography
@@ -66,13 +73,11 @@ const Card: FC<CardProps> = ({
           <b>description:</b> {description || '-'}
         </Typography>
       </CardContent>
-      <Box position="absolute" top="1.6rem" right="1.6rem">
-        {selected ? (
-          <StarIcon fontSize="medium" color="warning" />
-        ) : (
-          <StarOutlineIcon fontSize="medium" />
-        )}
-      </Box>
+      {icon && (
+        <Box position="absolute" top="1.6rem" right="1.6rem">
+          {icon}
+        </Box>
+      )}
     </MUICard>
   );
 };
