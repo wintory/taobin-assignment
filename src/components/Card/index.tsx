@@ -16,6 +16,7 @@ interface CardProps {
   icon?: ReactNode;
   link?: string;
   date?: string;
+  note?: string;
 }
 
 const Card: FC<CardProps> = ({
@@ -27,6 +28,7 @@ const Card: FC<CardProps> = ({
   icon,
   link,
   date,
+  note,
 }) => {
   const theme = useTheme();
   const isSelected = selected && !disabled;
@@ -91,6 +93,17 @@ const Card: FC<CardProps> = ({
             whiteSpace="nowrap"
           >
             <b>Starred Date:</b> {date}
+          </Typography>
+        )}
+        {note && (
+          <Typography
+            variant="h6"
+            color="text.secondary"
+            textOverflow="ellipsis"
+            overflow="hidden"
+            whiteSpace="nowrap"
+          >
+            <b>Note:</b> {note}
           </Typography>
         )}
       </CardContent>

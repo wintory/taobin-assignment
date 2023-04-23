@@ -55,6 +55,7 @@ const Home: FC = () => {
           {hasFavoriteRepo && (
             <Box width="100%" pt={2}>
               <Input
+                inputProps={{ maxLength: 255 }}
                 startAdornment={
                   <SearchIcon fontSize="large" sx={{ mr: '0.8rem' }} />
                 }
@@ -96,6 +97,7 @@ const Home: FC = () => {
                         disabled={false}
                         title={data.full_name}
                         description={data.description}
+                        note={data.note}
                         icon={
                           <DeleteIcon
                             color="error"

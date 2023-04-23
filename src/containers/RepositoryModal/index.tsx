@@ -2,6 +2,7 @@ import {
   Box,
   Button,
   CircularProgress,
+  Input,
   Modal,
   Step,
   StepLabel,
@@ -20,6 +21,7 @@ import useInfiniteScroll from 'react-infinite-scroll-hook';
 import StarIcon from '@mui/icons-material/Star';
 import StarOutlineIcon from '@mui/icons-material/StarOutline';
 import dayjs from 'dayjs';
+import debounce from 'lodash/debounce';
 
 interface RepositoryModalProps {
   isOpen: boolean;
@@ -51,6 +53,7 @@ const RepositoryModal: FC<RepositoryModalProps> = ({
   setFavoriteRepo,
 }) => {
   const [favorite, setFavorite] = useState<FavoriteRepo[]>([]);
+  const [note, setNote] = useState<string>('');
   const { isMobile } = useOrientation();
   const {
     repositories,
@@ -76,9 +79,14 @@ const RepositoryModal: FC<RepositoryModalProps> = ({
     [activeStep, repositories]
   );
 
+  const handleSetNote = debounce((v: string) => {
+    setNote(v);
+  }, 400);
+
   const handleClose = () => {
     setFavorite([]);
     setPage(0);
+    setNote('');
     setActiveStep(0);
     onClose();
   };
@@ -110,7 +118,12 @@ const RepositoryModal: FC<RepositoryModalProps> = ({
       return;
     }
 
-    setFavoriteRepo(favorite);
+    let result = favorite;
+
+    if (note) {
+      result = result.map(v => ({ ...v, note }));
+    }
+    setFavoriteRepo(result);
     handleClose();
   };
 
@@ -229,6 +242,14 @@ const RepositoryModal: FC<RepositoryModalProps> = ({
           justifyContent="flex-end"
           gap={2}
         >
+          {!isFirstStep && !isMobile && (
+            <Input
+              inputProps={{ maxLength: 255 }}
+              sx={{ width: '100%', fontSize: '1.8rem' }}
+              placeholder="Add note for starred repository"
+              onChange={e => handleSetNote(e.target.value)}
+            />
+          )}
           <Button variant="text" color="primary" onClick={handleClickBack}>
             <Typography variant="h5">
               {isFirstStep ? 'Cancel' : 'Back'}

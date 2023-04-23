@@ -73,4 +73,4 @@ export type Repository = {
 export type FavoriteRepo = Pick<
   Repository,
   'id' | 'full_name' | 'description' | 'html_url'
-> & { starredDate: string };
+> & { starredDate: string; note?: string };
