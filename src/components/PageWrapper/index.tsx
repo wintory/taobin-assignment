@@ -1,5 +1,9 @@
 import { styled } from '@mui/material';
-import { FC } from 'react';
+import { FC, ReactNode } from 'react';
+
+interface PageWrapperProps {
+  children: ReactNode;
+}
 
 const Wrapper = styled('div')(() => ({
   maxWidth: '133.6rem',
@@ -11,7 +15,7 @@ const Wrapper = styled('div')(() => ({
   position: 'relative',
 }));
 
-const PageWrapper: FC = ({ children }) => {
+const PageWrapper: FC<PageWrapperProps> = ({ children }) => {
   return <Wrapper>{children}</Wrapper>;
 };
 
