@@ -1,5 +1,5 @@
 import { Repository } from './../types/repository';
-import { useState } from 'react';
+import { useCallback, useState } from 'react';
 import { getRepositories } from '../services/repository';
 import { PAGE_LIMIT } from '../constants';
 
@@ -38,7 +38,7 @@ const useRepository = () => {
     } catch {
       setIsLoading(false);
       setHasNextPage(false);
-      alert('Cannot get repository, please try again');
+      alert('Cannot get repository, please close modal and try again');
     }
   };
 

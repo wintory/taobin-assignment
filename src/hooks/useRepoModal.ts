@@ -9,9 +9,14 @@ import useRepository from './useRepository';
 interface UseRepoModalProps {
   setFavoriteRepo: (value: FavoriteRepo[]) => void;
   onClose: () => void;
+  isOpen: boolean;
 }
 
-const useRepoModal = ({ setFavoriteRepo, onClose }: UseRepoModalProps) => {
+const useRepoModal = ({
+  setFavoriteRepo,
+  onClose,
+  isOpen,
+}: UseRepoModalProps) => {
   const [favorite, setFavorite] = useState<FavoriteRepo[]>([]);
   const [note, setNote] = useState<string>('');
   const {
@@ -97,8 +102,10 @@ const useRepoModal = ({ setFavoriteRepo, onClose }: UseRepoModalProps) => {
   };
 
   useEffect(() => {
-    getRepositoryData();
-  }, []);
+    if (isOpen) {
+      getRepositoryData();
+    }
+  }, [isOpen]);
 
   return {
     favorite,

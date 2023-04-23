@@ -64,7 +64,7 @@ const RepositoryModal: FC<RepositoryModalProps> = ({
     activeStep,
     isLoading,
     hasNextPage,
-  } = useRepoModal({ onClose, setFavoriteRepo });
+  } = useRepoModal({ onClose, setFavoriteRepo, isOpen });
 
   return (
     <Modal
