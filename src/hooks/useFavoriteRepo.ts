@@ -9,13 +9,15 @@ const useFavoriteRepo = () => {
 
   const resultSearchRepo = useMemo(
     () =>
-      favoriteRepo.filter(v => {
+      favoriteRepo.filter(item => {
         if (searchText) {
+          const text = searchText.toLowerCase();
+          const { full_name, description, starredDate, note } = item;
           return (
-            v.full_name.includes(searchText) ||
-            v.description.includes(searchText) ||
-            v.starredDate.includes(searchText) ||
-            (v.note && v.note.includes(searchText))
+            full_name.toLowerCase().includes(text) ||
+            description.toLowerCase().includes(text) ||
+            starredDate.toLowerCase().includes(text) ||
+            (note && note.toLowerCase().includes(text))
           );
         }
 
