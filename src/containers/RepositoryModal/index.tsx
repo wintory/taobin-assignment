@@ -10,7 +10,7 @@ import {
   styled,
   Typography,
 } from '@mui/material';
-import { FC, Fragment, useEffect } from 'react';
+import { FC, Fragment } from 'react';
 import CloseIcon from '@mui/icons-material/Close';
 import Card from '../../components/Card';
 import isNil from 'lodash/isNil';
@@ -101,7 +101,7 @@ const RepositoryModal: FC<RepositoryModalProps> = ({
         <Box
           position="relative"
           overflow="auto"
-          height="calc(100% - 14rem)"
+          height="calc(100% - 15rem)"
           px="0.8rem"
         >
           {!isFirstStep && (
@@ -124,7 +124,7 @@ const RepositoryModal: FC<RepositoryModalProps> = ({
             gap={isMobile ? 0 : 2}
           >
             {showData ? (
-              showData.map(data => {
+              showData.map((data, i) => {
                 const hasFavorited = !isNil(
                   favoriteRepo.find(v => v.id === data.id)
                 );
@@ -139,7 +139,9 @@ const RepositoryModal: FC<RepositoryModalProps> = ({
                       disabled={hasFavorited}
                       icon={
                         isSelected ? (
-                          <StarIcon fontSize="medium" color="warning" />
+                          <>
+                            <StarIcon fontSize="medium" color="warning" />
+                          </>
                         ) : (
                           <StarOutlineIcon fontSize="medium" />
                         )
@@ -166,7 +168,7 @@ const RepositoryModal: FC<RepositoryModalProps> = ({
         </Box>
         <Box
           position="relative"
-          height="4rem"
+          height="5rem"
           display="flex"
           alignItems="center"
           justifyContent="flex-end"

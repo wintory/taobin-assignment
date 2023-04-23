@@ -1,46 +1,46 @@
 import { Repository } from './../types/repository';
-import { useState, useEffect, useCallback, useMemo } from 'react';
+import { useState } from 'react';
 import { getRepositories } from '../services/repository';
 import { PAGE_LIMIT } from '../constants';
-import { uniqBy } from 'lodash';
 
 const useRepository = () => {
   const [repositories, setRepositories] = useState<Repository[]>([]);
   const [isLoading, setIsLoading] = useState(false);
   const [page, setPage] = useState<number>(1);
   const [maxPage, setMaxPage] = useState(0);
-  const hasNextPage = useMemo(() => page <= maxPage, [page, maxPage]);
+  const [hasNextPage, setHasNextPage] = useState(true);
 
-  const getRepositoryData = useCallback(
-    async (currentPage?: number, limit?: number) => {
+  const getRepositoryData = async (currentPage?: number, limit?: number) => {
+    try {
       setIsLoading(true);
+      const lim = limit || PAGE_LIMIT;
       const {
         items = [],
         total_count,
       }: { items: Repository[]; total_count: number } = await getRepositories(
         currentPage || page,
-        limit || PAGE_LIMIT
+        lim
       );
-      console.log({ items, currentPage, limit });
-      const result = uniqBy([...repositories, ...items], data => data.id);
-      const max = Math.round(total_count / page);
+      if (items) {
+        const max = Math.round(total_count / lim);
 
-      if (maxPage !== max) {
-        setMaxPage(max);
-      }
+        if (maxPage !== max) {
+          setMaxPage(max);
+          setHasNextPage(page <= max);
+        }
 
-      if (currentPage) {
-        setPage(currentPage);
+        if (currentPage) {
+          setPage(currentPage);
+        }
+        setRepositories([...repositories, ...items]);
+        setIsLoading(false);
       }
-      setRepositories(result);
+    } catch {
       setIsLoading(false);
-    },
-    []
-  );
-
-  useEffect(() => {
-    getRepositoryData();
-  }, []);
+      setHasNextPage(false);
+      alert('Cannot get repository, please try again');
+    }
+  };
 
   return {
     repositories,

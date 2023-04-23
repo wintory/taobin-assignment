@@ -6,7 +6,7 @@ import RepositoryModal from '../containers/RepositoryModal';
 import useFavoriteRepo from '../hooks/useFavoriteRepo';
 import DeleteIcon from '@mui/icons-material/Delete';
 import SearchIcon from '@mui/icons-material/Search';
-import GithubHeader from 'assets/images/github-header-image.png';
+import GithubHeader from '../assets/images/github-header-image.png';
 import AddIcon from '@mui/icons-material/Add';
 
 const Wrapper = styled(Box)(() => ({

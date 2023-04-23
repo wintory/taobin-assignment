@@ -1,6 +1,7 @@
 import dayjs from 'dayjs';
+import { uniqBy } from 'lodash';
 import debounce from 'lodash/debounce';
-import { useMemo, useState } from 'react';
+import { useMemo, useState, useEffect } from 'react';
 import useInfiniteScroll from 'react-infinite-scroll-hook';
 import { FavoriteRepo } from '../types/repository';
 import useRepository from './useRepository';
@@ -27,15 +28,16 @@ const useRepoModal = ({ setFavoriteRepo, onClose }: UseRepoModalProps) => {
   const [loadingRef] = useInfiniteScroll({
     loading: isLoading,
     hasNextPage: isFirstStep && hasNextPage,
-    onLoadMore: () => getRepositoryData(page + 1, 10),
+    onLoadMore: () => getRepositoryData(page + 1),
     disabled: isLoading || !hasNextPage || !isFirstStep,
     rootMargin: '0px 0px 400px 0px',
   });
   const steps = ['Repositories', 'Confirmation'];
-  const showData = useMemo(
-    () => (isFirstStep ? repositories : favorite),
-    [activeStep, repositories]
-  );
+  const showData = useMemo(() => {
+    if (isFirstStep) return uniqBy(repositories, v => v.id);
+
+    return favorite;
+  }, [activeStep, repositories]);
 
   const handleSetNote = debounce((v: string) => {
     setNote(v);
@@ -93,6 +95,10 @@ const useRepoModal = ({ setFavoriteRepo, onClose }: UseRepoModalProps) => {
 
     setActiveStep(activeStep - 1);
   };
+
+  useEffect(() => {
+    getRepositoryData();
+  }, []);
 
   return {
     favorite,
