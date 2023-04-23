@@ -1,8 +1,10 @@
 import { FavoriteRepo, Repository } from './../types/repository';
-import { useMemo, useState } from 'react';
+import { useState } from 'react';
 import { getRepositories } from '../services/repository';
 import { PAGE_LIMIT } from '../constants';
 import { useQuery } from '@tanstack/react-query';
+import uniq from 'lodash/uniq';
+import { uniqBy } from 'lodash';
 
 const useRepository = () => {
   const [repositories, setRepositories] = useState<Repository[]>([]);
@@ -10,9 +12,13 @@ const useRepository = () => {
   const [isOpenAddRepo, setIsOpenAddRepo] = useState<boolean>(false);
   const [page, setPage] = useState<number>(1);
   const { isLoading, refetch } = useQuery(['repositories'], async () => {
-    const { items = [] } = await getRepositories(page, PAGE_LIMIT);
+    const { items = [] }: { items: Repository[] } = await getRepositories(
+      page,
+      PAGE_LIMIT
+    );
+    const result = uniqBy(items, data => data.id);
 
-    setRepositories([...repositories, ...items]);
+    setRepositories(result);
   });
 
   const handleAddFavoriteRepo = (repoData: FavoriteRepo[]) => {

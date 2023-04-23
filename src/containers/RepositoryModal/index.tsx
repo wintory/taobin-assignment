@@ -1,5 +1,6 @@
 import {
   Box,
+  Divider,
   Modal,
   Step,
   StepLabel,
@@ -7,12 +8,16 @@ import {
   styled,
   Typography,
 } from '@mui/material';
-import { FC, useState } from 'react';
+import { FC, Fragment, useState } from 'react';
 import CloseIcon from '@mui/icons-material/Close';
+import Card from '../../components/Card';
+import { Repository } from '../../types/repository';
+import useOrientation from '../../hooks/useOrientation';
 
 interface RepositoryModalProps {
   isOpen: boolean;
   onClose: () => void;
+  data?: Repository[];
 }
 
 export const ModalWrapper = styled(Box)(({ theme }) => ({
@@ -20,10 +25,11 @@ export const ModalWrapper = styled(Box)(({ theme }) => ({
   top: '50%',
   left: '50%',
   transform: 'translate(-50%, -50%)',
-  maxWidth: '60rem',
-  maxHeight: '60rem',
+  width: '100%',
+  maxWidth: '80vw',
+  maxHeight: '80vh',
   boxSizing: 'border-box',
-  overflowY: 'auto',
+  overflow: 'auto',
   backgroundColor: theme.palette.common.white,
   borderRadius: '1.6rem',
   padding: '1.6rem',
@@ -32,10 +38,15 @@ export const ModalWrapper = styled(Box)(({ theme }) => ({
 const RepositoryModal: FC<RepositoryModalProps> = ({
   isOpen,
   onClose,
-  data,
+  data = [],
 }) => {
+  const { isMobile } = useOrientation();
   const [activeStep, setActiveStep] = useState(0);
   const steps = ['Repositories', 'Confirmation'];
+
+  const handleClickNext = () => {
+    setActiveStep(activeStep + 1);
+  };
 
   return (
     <Modal
@@ -45,29 +56,47 @@ const RepositoryModal: FC<RepositoryModalProps> = ({
       aria-describedby="modal-modal-description"
     >
       <ModalWrapper>
-        <Typography id="modal-modal-title" variant="h6" component="h2" mb={2}>
-          Repositories
-        </Typography>
-        <CloseIcon
-          fontSize="medium"
-          onClick={onClose}
-          sx={{
-            position: 'absolute',
-            right: '1.2rem',
-            top: '1.2rem',
-            cursor: 'pointer',
-          }}
-        />
-        <Stepper activeStep={activeStep} alternativeLabel>
-          {steps.map(label => (
-            <Step key={label}>
-              <StepLabel>{label}</StepLabel>
-            </Step>
-          ))}
-        </Stepper>
-        <Typography id="modal-modal-description" sx={{ mt: 2 }}>
-          Duis mollis, est non commodo luctus, nisi erat porttitor ligula.
-        </Typography>
+        <Box position="sticky">
+          <Typography id="modal-modal-title" variant="h6" component="h2" mb={2}>
+            Repositories
+          </Typography>
+          <CloseIcon
+            fontSize="medium"
+            onClick={onClose}
+            sx={{
+              position: 'absolute',
+              right: '1.2rem',
+              top: '1.2rem',
+              cursor: 'pointer',
+            }}
+          />
+          <Stepper activeStep={activeStep} alternativeLabel>
+            {steps.map(label => (
+              <Step key={label}>
+                <StepLabel>{label}</StepLabel>
+              </Step>
+            ))}
+          </Stepper>
+        </Box>
+        <Box position="relative" height="30rem" overflow="auto">
+          <Box
+            width="100%"
+            height="100%"
+            display="grid"
+            gridTemplateColumns={isMobile ? '1fr' : '1fr 1fr'}
+            gap={2}
+          >
+            {data.map(({ id, full_name, description }) => (
+              <Fragment key={id}>
+                <Card
+                  title={full_name}
+                  description={description}
+                  selected={false}
+                />
+              </Fragment>
+            ))}
+          </Box>
+        </Box>
       </ModalWrapper>
     </Modal>
   );

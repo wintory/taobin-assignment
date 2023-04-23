@@ -25,10 +25,14 @@ const Home: FC = () => {
     [favoriteRepo.length]
   );
 
+  const repo = useMemo(() => {
+    return repositories;
+  }, [repositories]);
+
   return (
     <PageWrapper>
       <Wrapper>
-        <Typography variant="h5">My repos</Typography>
+        <Typography variant="h1">My repos</Typography>
         <Box width="100%" height="100%" mt={5} textAlign="left">
           <AddButton
             onClick={() => setIsOpenAddRepo(!isOpenAddRepo)}
@@ -46,10 +50,17 @@ const Home: FC = () => {
           justifyContent="center"
           mt={2}
         >
-          {hasFavoriteRepo ? <div /> : <div>No Favorite Repository.</div>}
+          {hasFavoriteRepo ? (
+            <div />
+          ) : (
+            <div>
+              <Typography variant="h3">No Favorite Repository.</Typography>
+            </div>
+          )}
         </Box>
       </Wrapper>
       <RepositoryModal
+        data={repo}
         isOpen={isOpenAddRepo}
         onClose={() => setIsOpenAddRepo(false)}
       />
