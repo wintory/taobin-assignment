@@ -60,7 +60,7 @@ const Home: FC = () => {
                   <SearchIcon fontSize="large" sx={{ mr: '0.8rem' }} />
                 }
                 sx={{ width: '100%', fontSize: '1.8rem' }}
-                placeholder="Search by name and description"
+                placeholder="Search by name, description, date and note"
                 onChange={e => handleSearch(e.target.value)}
               />
             </Box>

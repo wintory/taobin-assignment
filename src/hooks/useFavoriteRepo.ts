@@ -13,7 +13,9 @@ const useFavoriteRepo = () => {
         if (searchText) {
           return (
             v.full_name.includes(searchText) ||
-            v.description.includes(searchText)
+            v.description.includes(searchText) ||
+            v.starredDate.includes(searchText) ||
+            (v.note && v.note.includes(searchText))
           );
         }
 
