@@ -1,5 +1,5 @@
 import { Repository } from './../types/repository';
-import { useCallback, useState } from 'react';
+import { useState } from 'react';
 import { getRepositories } from '../services/repository';
 import { PAGE_LIMIT } from '../constants';
 
