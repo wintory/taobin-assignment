@@ -15,7 +15,7 @@ import Card from '../../components/Card';
 import isNil from 'lodash/isNil';
 import useOrientation from '../../hooks/useOrientation';
 import useRepository from '../../hooks/useRepository';
-import { FavoriteRepo, Repository } from '../../types/repository';
+import { FavoriteRepo } from '../../types/repository';
 import useInfiniteScroll from 'react-infinite-scroll-hook';
 import StarIcon from '@mui/icons-material/Star';
 import StarOutlineIcon from '@mui/icons-material/StarOutline';
